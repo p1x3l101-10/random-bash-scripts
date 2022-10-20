@@ -1,0 +1,7 @@
+#!/bin/bash
+if [[ "$1" == "is" && "$2" == "love" ]]; then
+	echo "Oh, baby dont hurt me"
+	echo "Don't hurt me"
+	echo "No more"
+	echo -en "\033]0; YOU SAID THE THING!!!!!\a"
+fi

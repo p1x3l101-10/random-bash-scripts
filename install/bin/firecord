@@ -1,0 +1,7 @@
+#!/bin/bash
+echo '==> Starting OrBot'
+doas bash -c 'exec tor&'
+echo '==> OrBot started; Opening FireCord'
+firefox -P FireCord --new-window 'https://discord.com/app'
+echo '== FireCord Closed; Killing OrBot'
+pidof tor | xargs doas kill -9

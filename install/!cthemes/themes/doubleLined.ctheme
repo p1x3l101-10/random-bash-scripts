@@ -1,0 +1,41 @@
+themeName="Double lined"
+themeDesc="A double lined theme with root support"
+themeAuthor="Pixel"
+shells=('zsh' 'bash')
+
+zshTheme() {
+	precmd() { print ""; }
+	prompt() { 
+		PROMPT="%F{008}┌─(%f%(!.%F{009}.%F{010})%n%f@%F{012}%m%f%F{008})─[%f%F{014}%~%f%F{008}]─{ %f%F{013}%t%f %F{008}|%f %F{013}%w%f%F{008} }%f"$'\n'"%F{008}└%f %(!.%F{009}.%F{010})%#%f "	
+		PROMPT2="%(!.%F{009}.%F{010}%#%f%B>%b "
+	}
+	prompt
+}
+
+bashTheme() {
+	precmd() { echo ""; }
+	prompt() {	
+		# tput Setup
+		_GREY=$(tput setaf 8)
+		_GREEN=$(tput setaf 10)
+		_RED=$(tput setaf 9)
+		_BLUE=$(tput setaf 12)
+		_CYAN=$(tput setaf 14)
+		_MAGENTA=$(tput setaf 13)
+		_RESET=$(tput sgr0)
+		_BOLD=$(tput bold)
+		
+		# Red if root, otherwise green
+		if [ "$LOGNAME" = root ] || [ "`id -u`" -eq 0 ] ; then
+			_USERCOL=${_RED}		
+		else
+			_USERCOL=${_GREEN}
+		fi
+	
+		# Actual theme
+		PS1="${_GREY}┌─(${_USERCOL}\u${_RESET}@${_BLUE}\h${_GREY})─[${_CYAN}\w${_GREY}]─{ ${_MAGENTA}\D{%I:%M %p} ${_GREY}| ${_MAGENTA}\D{%a %d} ${_GREY}}${_RESET}\n${_GREY}└ ${_USERCOL}\$ ${_RESET}"
+		PS2="${_USERCOL}\$${_BOLD}>%{_RESET}"	
+	}
+	PROMPT_COMMAND=precmd
+	prompt
+}

@@ -1,0 +1,46 @@
+#!/bin/bash
+# Start OrBot
+echo '==>Starting OrBot...'
+doas tor
+echo '==> OrBot started!'
+
+# Choose the client
+HEIGHT=15
+WIDTH=40
+CHOICE_HEIGHT=4
+BACKTITLE=""
+TITLE=""
+MENU="Select your preferred Tox client:"
+
+OPTIONS=(1 "qTox"
+         2 "Toxic"
+ 	       3 "Venom"
+ 	       4 "uTox")
+
+CHOICE=$(dialog --clear \
+                --backtitle "$BACKTITLE" \
+                --title "$TITLE" \
+                --menu "$MENU" \
+                $HEIGHT $WIDTH $CHOICE_HEIGHT \
+                "${OPTIONS[@]}" \
+                2>&1 >/dev/tty)
+
+# Run the client
+echo '==> Running selected Tox client'
+case $CHOICE in
+        1)
+                qtox -P socks5:127.0.0.1:9050
+                ;;
+        2)
+                toxic -t -p 127.0.0.1 9050
+                ;;
+        3)
+                echo "Venom is not working as of now"
+                ;;
+	4)
+                utox
+                ;;
+esac
+# Kill tor
+echo '==> Tox client closed, killing OrBot'
+pidof tor | xargs doas kill -9

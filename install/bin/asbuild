@@ -1,0 +1,5 @@
+#!/bin/bash
+fout=$(echo $1 | cut -f 1 -d '.')
+nasm -f elf64 -o $fout.o $1
+ld -o $fout $fout.o
+rm $fout.o

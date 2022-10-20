@@ -1,0 +1,31 @@
+# Use colorful commands
+alias ls='ls --color=auto'
+alias grep='grep --colour=auto'
+alias egrep='egrep --colour=auto'
+alias fgrep='fgrep --colour=auto'
+
+# Custom Commands
+alias l='ls -l'
+alias a='ls -a'
+alias la='ls -la'
+alias yt='ytfzf -t'
+alias ytm='yt -m'
+
+# Force Xwayland commands
+alias xw='QT_QPA_PLATFORM=xcb'
+
+# Make doas look like sudo
+alias sudo='doas '
+alias sudoedit='doas vi'
+
+# Corrections for doas
+alias daos='$HOME/bin/daos'
+
+# Add ~/bin to the path
+export PATH="$HOME/bin:$PATH"
+
+# Hardcode custom assembler options to cnasm
+alias cnasm='nasm -f elf64'
+
+# Yay cutom arguments
+alias yay='yay --editmenu --batchinstall --sudo doas --nosudoloop'
