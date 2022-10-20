@@ -1,0 +1,2 @@
+#!/bin/bash
+ssh -N -D 9090 pixel@p1x3l101.ddns.net -p 7003

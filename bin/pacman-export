@@ -1,0 +1,117 @@
+#!/bin/bash
+# Check for arguments
+if [[ $# -eq 0 ]] ; then
+    echo "\nNo argument supplied\n"
+    exit 1
+fi
+# Check what privelage escalator is being used (if any)
+if pacman -Q sudo; then
+  esc="sudo"
+elif pacman -Q opendoas;then
+  esc="doas"
+else
+  esc=""
+fi
+
+# Functions
+help () {
+  echo '-h, --help: Prints this menu and exits.'
+  echo '-e, --export: Exports the list of installed packages to two files, then exits.'
+  echo '      For packages in repositories the file is called "repo.paclist"'
+  echo '      For externally installed packages this file is called "external.paclist"'
+  echo '-p, --import-repo-pkgs: Specify a file after this and pacman will install all packages included in said file.'
+  echo '-a, --import-aur-pkgs: Specify a file after this and a supported AUR helper will install the packages included in said file.'
+}
+
+export-pkg () {
+  pacman -Qqe | grep -Fvx "$(pacman -Qqm)" > repo.paclist
+  pacman -Qqm > external.paclist
+}
+
+repopkg () {
+  xargs $esc pacman -S < $pkg
+}
+
+aurpkg () {
+  # Checks
+  if pacman -Q yay; then
+    cmd="yay -S"
+  elif pacman -Q trizen;then
+    cmd="trizen -S"
+  elif pacman -Q paru;then
+    cmd="paru -S"
+  fi
+  # Install packages
+  xargs $cmd < $pkg
+}
+
+while test $# -gt 0; do
+  case "$1" in
+    -h)
+      out='help'
+      ;;
+    --help)
+      out='help'
+      ;;
+    -e)
+      out='export'
+      ;;
+    --export)
+      out='export'
+      ;;
+    -p)
+      out='impkg'
+      ;;
+    --import-repo-pkgs)
+      out='impkg'
+      ;;
+    -a)
+      out='imaur'
+      ;;
+    --import-aur-pkgs)
+      out='imaur'
+      ;;
+    -*)
+      out='badopt'
+      ;;
+    *)
+      out='file'
+      ;;
+  esac
+  if [ "$out" == "badopt" ]; then
+    echo "Bad option $1"
+    exit 1
+  fi
+  if [ "$out" == "help" ]; then
+    help
+    exit 0
+  fi
+  if [ "$out" == "export" ]; then
+    export-pkg
+    exit 0
+  fi
+  if [ "$out" == "impkg" ]; then
+    w="1"
+    opt="1"
+  fi
+  if [ "$out" == "imaur" ]; then
+    w="1"
+    opt="2"
+  fi
+  if [ "$out" == "file" ]; then
+    pkg="$1"
+  fi
+  if [ "$w" -eq "1" ]; then
+    if [ "$out" == "file" ]; then
+      if [ "$opt" -eq "1" ]; then
+        repopkg
+      else
+        aurpkg
+      fi
+    fi
+  w="0"
+  fi
+  shift
+done
+
+exit 0
